@@ -7,8 +7,10 @@ mod pattern;
 mod playlistitem;
 mod plugin;
 mod project;
-mod projectParser;
+mod projectparser;
 mod track;
+mod channeldata;
+mod generatordata;
 
 #[cfg(test)]
 mod tests {

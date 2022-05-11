@@ -1,10 +1,12 @@
+use num_enum::{TryFromPrimitive, IntoPrimitive};
+
 const INT: i32 = 128;
 const WORD: i32 = 64;
 const UNDEF: i32 = 192;
 const TEXT: i32 = UNDEF;
 const DATA: i32 = 210;
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, TryFromPrimitive, Debug, IntoPrimitive)]
 #[repr(i32)]
 pub enum Event {
     ByteEnabled = 0,
