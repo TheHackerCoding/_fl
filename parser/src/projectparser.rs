@@ -62,7 +62,7 @@ impl ProjectParser {
         for i in 0..channelCount {
             self.project.channels.push(Channel::custom(
                 i.into(),
-                Some(Box::new(GeneratorData::new())),
+                Box::new(GeneratorData::new()),
             ))
         }
         self.project.ppq = data.read_i16()?.into();
@@ -102,6 +102,7 @@ impl ProjectParser {
     }
 
     fn parseByteEvent(&mut self, eventId: i32, data: &mut BinaryReader) -> Result<()> {
+        // let dat = self.currentChannel.data;
         let data = data.read_bytes(1)?[0] as i32;
         self.output(format! {"byte: {:?}", data});
         // oh god this must be rust hell
@@ -112,7 +113,7 @@ impl ProjectParser {
         //     None => None,
         // };
         // let mut genData = &mut *self.currentChannel.data.as_ref().unwrap().as_any().downcast_ref::<GeneratorData>().as_mut().unwrap().to_owned().to_owned();
-        let mut genData = self.currentChannel.data;
+        let genData = &mut self.currentChannel.data;
         // fn parse<'a>(x: Option<&'a mut Box<&'a mut (dyn ChannelData + 'a)>>) -> &'a GeneratorData {
         //     x.unwrap()
         //         .as_mut()
@@ -126,11 +127,19 @@ impl ProjectParser {
         match Event::try_from(eventId).unwrap() {
             Event::ByteMainVol => self.project.mainVolume = data,
             Event::ByteUseLoopPoints => {
+                if stringify!(genData.as_ref()) != "NullChannelData" {
+                    // let mut gen = &*genData.as_mut().as_any().downcast_ref::<GeneratorData>().as_mut().unwrap().clone().to_owned();
+                    let x = genData.as_mut();
+                    let y = x.as_any().downcast_ref::<GeneratorData>();
+                    y.unwrap().insert = data;
+                    // gen.insert = data;
+                    // let _gen = gen.to_owned();
+                }
                 // if genData.is_some() {
                 //     // let mut gen = parse(genData);
                 //     genData.unwrap().change_insert(data);
                 // }
-                genData.insert = data;
+                // genData.insert = data;
             }
             _ => bail!("major paring error"),
         }

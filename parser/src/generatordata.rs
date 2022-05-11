@@ -2,6 +2,7 @@ use std::any::Any;
 
 use crate::{plugin::Plugin, enums::ArpDirection, channeldata::ChannelData};
 
+#[derive(Clone)]
 pub struct GeneratorData {
 pub pluginSettings: Vec<u8>,
     pub plugin: Plugin,

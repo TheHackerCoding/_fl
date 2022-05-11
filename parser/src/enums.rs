@@ -135,7 +135,7 @@ pub enum PluginType {
     Vst = 8,
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 #[repr(i32)]
 pub enum ArpDirection {
     Off = 0,
@@ -146,7 +146,7 @@ pub enum ArpDirection {
     Random = 5,
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 #[repr(i32)]
 pub enum PluginChunkId {
     Midi = 1,
@@ -163,7 +163,7 @@ pub enum PluginChunkId {
     VendorName = 56,
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 #[repr(i32)]
 pub enum InsertParam {
     SlotState = 0x00,
