@@ -62,7 +62,7 @@ impl ProjectParser {
         for i in 0..channelCount {
             self.project.channels.push(Channel::custom(
                 i.into(),
-                Box::new(GeneratorData::new()),
+                Some(Box::new(GeneratorData::new())),
             ))
         }
         self.project.ppq = data.read_i16()?.into();
@@ -107,13 +107,13 @@ impl ProjectParser {
         self.output(format! {"byte: {:?}", data});
         // oh god this must be rust hell
         // let mut genData = self.currentChannel.data.as_ref().unwrap().as_any().downcast_ref::<GeneratorData>().as_mut().unwrap();
-        // let mut genData: 
+        // let mut genData:
         // let mut genData: Option<&GeneratorData> = match self.currentChannel.data.as_ref() {
         //     Some(x) => Some(x.as_any().downcast_ref::<GeneratorData>().as_mut().unwrap().clone()),
         //     None => None,
         // };
         // let mut genData = &mut *self.currentChannel.data.as_ref().unwrap().as_any().downcast_ref::<GeneratorData>().as_mut().unwrap().to_owned().to_owned();
-        let genData = &mut self.currentChannel.data;
+        let mut genData = self.currentChannel.data.unwrap();
         // fn parse<'a>(x: Option<&'a mut Box<&'a mut (dyn ChannelData + 'a)>>) -> &'a GeneratorData {
         //     x.unwrap()
         //         .as_mut()
@@ -129,14 +129,41 @@ impl ProjectParser {
             Event::ByteUseLoopPoints => {
                 if stringify!(genData.as_ref()) != "NullChannelData" {
                     // let mut gen = &*genData.as_mut().as_any().downcast_ref::<GeneratorData>().as_mut().unwrap().clone().to_owned();
-                    let x = genData.as_mut();
-                    let y = x.as_any().downcast_ref::<GeneratorData>();
-                    y.unwrap().insert = data;
+                    // let x = genData.as_mut().as_mut().as_deref_mut().unwrap();
+                    // let y = x.as_any().downcast_ref::<GeneratorData>();
+                    // y.unwrap().insert = data;
+                    // let mut gen = genData.as_ref();
+                    // let x = gen.downcast_ref::<GeneratorData>();
+                    let mut gen = genData.as_mut();
+                    let x = gen.as_any().downcast_ref::<GeneratorData>();
+                    let y = x.unwrap();
+                    let z = GeneratorData {
+                        insert: data,
+                        ..y.clone()
+                    };
+                    let _z = Box::new(z);
+                    // z.insert = data;
+                    // let _z = z.clone();
+                    // gen = x.unwrap();
+                    // let h: &mut Box<(dyn ChannelData + 'static)> = Some(&z.try_into().unwrap()).unwrap();
+                    // let h: &mut Box<(dyn ChannelData + 'static)> = &z.into();
+                    // match &z.into() as &mut Box<(dyn ChannelData + 'static)> {
+                    //     Some(x) => {
+                    //         let _x = x.unwrap();
+                    //         genData = _x;
+                    //     },
+                    //     _ => bail!("FUCK")
+                    // } 
+                    genData = z.as_any().downcast_ref::<Box<(dyn ChannelData + 'static)>>().unwrap().to_owned();
+                    // let x = gen.to_owned().as_any().downcast_ref::<GeneratorData>()
+                    // let x = gen.downcast_ref::<GeneratorData>();
+                    // let x = gen.as_any().downcast_ref::<GeneratorData>();
+                    // let x = gen;
                     // gen.insert = data;
                     // let _gen = gen.to_owned();
                 }
                 // if genData.is_some() {
-                //     // let mut gen = parse(genData);
+                //     // let mut gen = parse(genData);0
                 //     genData.unwrap().change_insert(data);
                 // }
                 // genData.insert = data;

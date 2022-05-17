@@ -4,7 +4,7 @@ pub struct Channel {
     pub id: i32,
     pub name: String,
     pub color: u32,
-    pub data: Box<dyn ChannelData>,
+    pub data: Option<Box<dyn ChannelData>>,
 }
 
 impl Channel {
@@ -13,11 +13,11 @@ impl Channel {
             id: 0,
             name: "".to_string(),
             color: 0x4080FF,
-            data: Box::new(NullChannelData)
+            data: None
         }
     }
 
-    pub fn custom(id: i32, data: Box<dyn ChannelData>) -> Self {
+    pub fn custom(id: i32, data: Option<Box<dyn ChannelData>>) -> Self {
         Channel {
             id,
             name: "".to_string(),
