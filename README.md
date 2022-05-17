@@ -1,4 +1,4 @@
-# `fl` [![Rust](https://skillicons.dev/icons?i=rust)](https://skillicons.dev)
+# `fl` <img src="https://skillicons.dev/icons?i=rust" alt="rust" width="25"/>
 
 > a fl studio project parser and viewer written in rust
 
